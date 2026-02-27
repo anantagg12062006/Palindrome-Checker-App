@@ -1,63 +1,56 @@
 import java.util.Scanner;
-import java.util.Stack;
 
 interface PalindromeStrategy {
     boolean isPalindrome(String input);
 }
 
-class StackPalindromeStrategy implements PalindromeStrategy {
+class TwoPointerPalindromeStrategy implements PalindromeStrategy {
 
     @Override
     public boolean isPalindrome(String input) {
 
         String normalized = input.replaceAll("[^a-zA-Z0-9]", "").toLowerCase();
-        Stack<Character> stack = new Stack<>();
 
-        for (char ch : normalized.toCharArray()) {
-            stack.push(ch);
-        }
+        int start = 0;
+        int end = normalized.length() - 1;
 
-        for (char ch : normalized.toCharArray()) {
-            if (ch != stack.pop()) {
+        while (start < end) {
+            if (normalized.charAt(start) != normalized.charAt(end)) {
                 return false;
             }
+            start++;
+            end--;
         }
-
         return true;
     }
 }
-
-
-class PalindromeContext {
-    private PalindromeStrategy strategy;
-
-    public PalindromeContext(PalindromeStrategy strategy) {
-        this.strategy = strategy;
-    }
-
-    public boolean execute(String input) {
-        return strategy.isPalindrome(input);
-    }
-}
-
-// Main Application
 public class PalindromeCheckerApp {
-
     public static void main(String[] args) {
 
         Scanner scanner = new Scanner(System.in);
 
-        PalindromeStrategy strategy = new StackPalindromeStrategy();
-        PalindromeContext context = new PalindromeContext(strategy);
+        PalindromeStrategy strategy = new TwoPointerPalindromeStrategy();
 
         System.out.print("Enter a string: ");
         String input = scanner.nextLine();
 
-        if (context.execute(input)) {
+
+        long startTime = System.nanoTime();
+
+        boolean result = strategy.isPalindrome(input);
+
+
+        long endTime = System.nanoTime();
+
+        long duration = endTime - startTime;
+
+        if (result) {
             System.out.println("The string is a palindrome.");
         } else {
             System.out.println("The string is not a palindrome.");
         }
+
+        System.out.println("Execution Time: " + duration + " nanoseconds");
 
         scanner.close();
     }
